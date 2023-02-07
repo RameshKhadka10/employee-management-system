@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -21,7 +22,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+
+        CompletableFuture<List<Employee>> completableFuture
+                = CompletableFuture.supplyAsync(employeeRepository::findAll);
+
+        try {
+            return completableFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
