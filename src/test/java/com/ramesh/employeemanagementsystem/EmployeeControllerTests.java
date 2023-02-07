@@ -2,8 +2,10 @@ package com.ramesh.employeemanagementsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ramesh.employeemanagementsystem.controller.EmployeeController;
+import com.ramesh.employeemanagementsystem.exception.NotFoundException;
 import com.ramesh.employeemanagementsystem.model.Employee;
 import com.ramesh.employeemanagementsystem.service.EmployeeService;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,8 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import org.hamcrest.CoreMatchers;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = EmployeeController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -46,8 +47,8 @@ class EmployeeControllerTests {
 
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/employee/"));
 
-        response.andExpect(MockMvcResultMatchers.status().isOk());
-        //response.andExpect(MockMvcResultMatchers.jsonPath("$.size()", CoreMatchers.is(listOfEmployees.size())));
+        response.andExpect(status().isOk());
+        response.andExpect(MockMvcResultMatchers.jsonPath("$.data.size()", CoreMatchers.is(listOfEmployees.size())));
     }
 
     @Test
@@ -58,8 +59,22 @@ class EmployeeControllerTests {
 
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/employee/1"));
 
-        response.andExpect(MockMvcResultMatchers.status().isOk());
-        //response.andExpect(MockMvcResultMatchers.jsonPath("$.size()", CoreMatchers.is(listOfEmployees.size())));
+        response.andExpect(status().isOk());
+        response.andExpect(MockMvcResultMatchers.jsonPath("$.data.firstName", CoreMatchers.is(employee.getFirstName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.lastName", CoreMatchers.is(employee.getLastName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email", CoreMatchers.is(employee.getEmail())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.age", CoreMatchers.is(employee.getAge())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.department", CoreMatchers.is(employee.getDepartment())));
+    }
+
+    @Test
+    void getEmployeeByIdInvalidTest() throws Exception {
+        when(this.employeeService.getEmployeeById(1)).thenThrow(new NotFoundException("Employee not found"));
+
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/employee/1"));
+
+        response.andExpect(status().isNotFound());
+
     }
 
     @Test
@@ -72,7 +87,7 @@ class EmployeeControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(employee)));
 
-        response.andExpect(MockMvcResultMatchers.status().isOk());
+        response.andExpect(status().isOk());
     }
 
     @Test
@@ -85,7 +100,7 @@ class EmployeeControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(employee)));
 
-        response.andExpect(MockMvcResultMatchers.status().isOk());
+        response.andExpect(status().isOk());
     }
 
     @Test
@@ -96,6 +111,6 @@ class EmployeeControllerTests {
 
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.delete("/employee/1"));
 
-        response.andExpect(MockMvcResultMatchers.status().isOk());
+        response.andExpect(status().isOk());
     }
 }
