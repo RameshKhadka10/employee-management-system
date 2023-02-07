@@ -8,7 +8,6 @@ public class RestResponse {
     @JsonProperty("statusCode")
     private int statusCode;
 
-    //holds data return from API
     @JsonProperty("data")
     private Object data;
 

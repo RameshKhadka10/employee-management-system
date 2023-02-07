@@ -29,7 +29,7 @@ public class WebSecurityConfig {
                 new DefaultOAuth2AuthorizedClientManager(
                         clientRegistrationRepository,
                         authorizedClientRepository);
-        authorizedClientManager //
+        authorizedClientManager
                 .setAuthorizedClientProvider(authorizedClientProvider);
 
         return authorizedClientManager;
