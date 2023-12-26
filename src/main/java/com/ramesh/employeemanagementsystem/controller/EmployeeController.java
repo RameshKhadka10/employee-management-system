@@ -6,6 +6,7 @@ import com.ramesh.employeemanagementsystem.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,12 +21,14 @@ public class EmployeeController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<RestResponse> getEmployeeDetails(@PathVariable(value = "id") long id) {
         RestResponse response = RestResponse.success().build(this.employeeService.getEmployeeById(id));
         return ResponseEntity.ok(response);
     }
 
     @GetMapping()
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<RestResponse> getAllEmployee() {
         RestResponse response = RestResponse.success().build(this.employeeService.getAllEmployees());
         return ResponseEntity.ok(response);
