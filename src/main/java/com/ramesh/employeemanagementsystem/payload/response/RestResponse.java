@@ -20,6 +20,10 @@ public class RestResponse {
         return new SuccessResponseBuilder();
     }
 
+    public static ErrorResponseBuilder error() {
+        return new ErrorResponseBuilder();
+    }
+
     public static class SuccessResponseBuilder {
 
         public RestResponse build(Object data) {
@@ -27,8 +31,15 @@ public class RestResponse {
         }
     }
 
+    public static class ErrorResponseBuilder {
+        public RestResponse build(int statusCode, Object data) {
+            return new RestResponse(statusCode, data);
+        }
+    }
+
     public enum ResponseType {
-        SUCCESS(0, HttpStatus.OK);
+        SUCCESS(0, HttpStatus.OK),
+        INVALID_JWT(1, HttpStatus.UNAUTHORIZED);
 
         private final int code;
         private final HttpStatus httpStatus;
