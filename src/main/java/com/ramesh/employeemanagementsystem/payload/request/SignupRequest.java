@@ -1,4 +1,4 @@
-package com.ramesh.employeemanagementsystem.dto;
+package com.ramesh.employeemanagementsystem.payload.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

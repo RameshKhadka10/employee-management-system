@@ -1,4 +1,4 @@
-package com.ramesh.employeemanagementsystem.dto;
+package com.ramesh.employeemanagementsystem.payload.request;
 
 public class AuthRequest {
 

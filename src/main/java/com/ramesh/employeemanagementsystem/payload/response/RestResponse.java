@@ -25,7 +25,6 @@ public class RestResponse {
     }
 
     public static class SuccessResponseBuilder {
-
         public RestResponse build(Object data) {
             return new RestResponse(ResponseType.SUCCESS.httpStatus.value(), data);
         }

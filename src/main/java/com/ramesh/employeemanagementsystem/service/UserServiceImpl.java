@@ -3,6 +3,7 @@ package com.ramesh.employeemanagementsystem.service;
 import com.ramesh.employeemanagementsystem.model.User;
 import com.ramesh.employeemanagementsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +18,6 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-
     @Override
     public List<User> getAllUser() {
         return null;
@@ -30,6 +30,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByUsername(String username) {
-        return null;
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+    @Override
+    public Boolean checkIfUsernameExist(String username) {
+        return userRepository.existsByUsername(username);
     }
 }

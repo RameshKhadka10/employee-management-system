@@ -13,4 +13,6 @@ public interface UserService {
 
     User getUserByUsername(String username);
 
+    Boolean checkIfUsernameExist(String username);
+
 }
